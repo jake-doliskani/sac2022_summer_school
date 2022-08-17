@@ -143,6 +143,10 @@ where $\abs{\alpha}^2 + \abs{\beta}^2 = 1$. For the state of an $n$-qubit quantu
 \[ \sum_{x \in \{0, 1\}^n} \alpha_x \ket{x} \in \C^{2^n} \]
 where $\sum_x \abs{\alpha_x}^2 = 1$. In the above, we have used the basis $\{ \ket{x} : x \in \{0, 1\}^n \}$ of $\C^{2^n} = (\C^2)^{\otimes n}$, called the \textit{computational basis}. We usually talk about a quantum register. The classical state  of a register $\mathsf{X}$ is represented by a finite alphabet $\Sigma$. The complex Euclidean space associated with $\mathsf{X}$ is denoted by $\X = \C^\Sigma$. Therefore, when we use the computational basis, we are using the alphabet $\Sigma = \{0, 1\}^2$ of binary strings of length $n$. When we are working more than one registers, say $(\mathsf{X}_1, \dots, \mathsf{X}_k)$, with alphabets $(\Sigma_1, \dots, \Sigma_k)$, the state space is $\X_1 \otimes \cdots \otimes \X_k$ where $\X_j = \C^{\Sigma_j}$, i.e., the tensor product of the individual spaces.  
 
+
+
+\section{Fourier Transform}
+
 One the most used operations in quantum computing is the quantum Fourier transform (QFT). For an integer $N > 0$, define $\omega_N = e^{2\pi i / N}$. QFT over the group $\Z_N$ is defined by
 \[ \mathrm{QFT}_N: \ket{x} \mapsto \frac{1}{\sqrt{N}} \sum_{y \in \Z_N} \omega_N^{xy} \ket{y}. \]
 The above is defined for a basis element $\ket{x}$ but it can be extended to the whole space by linearity, for a general superposition we have
@@ -169,7 +173,10 @@ characters of $G$. We can then explicitly write the quantum Fourier transform of
 \sum_{(y_1, \dots, y_k) \in G} e^{2\pi i \left( \frac{x_1y_1}{N_1} + \cdots + \frac{x_ky_k}{N_1} 
 \right)} \ket{y_1, \dots, y_k}. \]
 
-\paragraph{The hidden subgroup problem.}
+
+
+\section{The Hidden Subgroup Problem}
+
 Let $f: G \rightarrow S$ be an efficiently computable function from a finite group $G$ to a finite 
 set $S$. Then $f$ is said to hide a subgroup $H \le G$ if the following holds: $f(x) = f(y)$ if and 
 only if $xy^{-1} \in H$ for all $x, y \in G$. The hidden subgroup problem (HSP) is to compute a 
