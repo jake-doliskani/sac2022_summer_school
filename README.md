@@ -1,1 +1,1 @@
-# sac2022_summer_school
+Notes for the SAC 2022 summer school lecture.
