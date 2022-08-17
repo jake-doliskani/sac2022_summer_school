@@ -1,0 +1,506 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin = 1in]{geometry}
+\usepackage{graphicx}              
+\usepackage{amsmath}               
+\usepackage{amsfonts}              
+\usepackage{amsthm}                
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{algpseudocode}
+\usepackage[plain]{algorithm}
+\usepackage{enumitem}
+\usepackage{authblk}
+\usepackage{tcolorbox}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{dsfont}
+\usepackage{tikz}
+\usetikzlibrary{cd}
+%% \usepackage[T1]{fontenc}
+%% \usepackage{libertine}
+%% \usepackage[libertine]{newtxmath}
+
+
+\hypersetup{
+	unicode = true,
+	colorlinks = true,
+	citecolor = blue,
+	filecolor = blue,
+	linkcolor = blue,
+	urlcolor = blue,
+	pdfstartview = {FitH},
+}
+
+% theorem environments
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{algo-thm}{Algorithm}
+\newtheorem*{remark}{Remark}
+\newtheorem{note}{Note}
+\newtheorem*{problem}{Problem}
+\newtheorem*{fact}{Fact}
+
+
+
+\algrenewcommand{\Require}{\item[\textit{Input:}]}
+\algrenewcommand{\Ensure}{\item[\textit{Output:}]}
+\algrenewcommand{\alglinenumber}[1]{#1.}
+
+\newcommand{\tildO}{\tilde{O}}
+
+% roman numerals
+\newcommand{\romnum}[1]{\romannumeral #1}
+\newcommand{\Romnum}[1]{\uppercase\expandafter{\romannumeral #1}}
+
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+
+\DeclareMathOperator{\fieldchar}{char} % characteristic of a field
+\DeclareMathOperator{\groupofend}{End} % endomorphism ring
+\DeclareMathOperator{\tr}{Tr} % finite field trace
+\DeclareMathOperator{\gal}{Gal} % Galois group
+\DeclareMathOperator{\order}{ord} % order of an element
+\DeclareMathOperator{\lcm}{lcm} % least common multiple
+\DeclareMathOperator{\divisor}{div} % divisor on a curve
+\DeclareMathOperator{\supp}{supp} % support of a divisor
+\DeclareMathOperator{\norm}{N} % norm
+\DeclareMathOperator{\negl}{negl} % norm
+\DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\aut}{Aut}
+\DeclareMathOperator{\minpoly}{minpoly}
+\DeclareMathOperator{\poly}{poly}
+\DeclareMathOperator{\rev}{rev}
+\DeclareMathOperator{\entpy}{H}
+\let\hom\relax
+\DeclareMathOperator{\hom}{Hom}
+\DeclareMathOperator{\qft}{F}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\elli}{Ell}
+
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\ket}{\lvert}{\rangle}
+\DeclarePairedDelimiter{\bra}{\langle}{\rvert}
+\DeclarePairedDelimiterX{\braket}[2]{\langle}{\rangle}{#1 \delimsize\vert #2}
+\DeclarePairedDelimiter{\lrang}{\langle}{\rangle}
+\DeclarePairedDelimiter{\opnorm}{\lVert}{\rVert}
+
+
+\def\Q{\mathbb{Q}}
+\def\C{\mathbb{C}}
+\def\K{\mathbb{K}}
+\def\N{\mathbb{N}}
+\def\R{\mathbb{R}}
+\def\Z{\mathbb{Z}}
+\def\F{\mathbb{F}}
+\def\P{\mathbb{P}}
+\def\MM{\mathsf{M}}
+\def\CC{\mathsf{C}}
+\def\X{\mathcal{X}}
+\def\SX{\mathcal{S(X)}}
+\def\U{\mathcal{U}}
+\def\PosSemi{\mathrm{Pos}}
+\newcommand{\kex}{\mathsf{K}}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\clo}{\text{Cl}(\mathcal{O})}
+
+
+\title{Quantum Computing And Isogeny-Based Cryptography}
+
+\author{
+    SAC 2022 - summer school \\
+	Jake Doliskani
+}
+
+\date{}
+\setlength{\parindent}{0pt}
+\sloppy
+\allowdisplaybreaks
+
+
+
+\begin{document}
+\maketitle
+
+
+
+
+We follow \cite{watrous2018theory} for our quantum computing notations. A qubit is usually written as
+\[ \alpha\ket{0} + \beta\ket{1} \in \C^2 \]
+where $\abs{\alpha}^2 + \abs{\beta}^2 = 1$. For the state of an $n$-qubit quantum system we write
+\[ \sum_{x \in \{0, 1\}^n} \alpha_x \ket{x} \in \C^{2^n} \]
+where $\sum_x \abs{\alpha_x}^2 = 1$. In the above, we have used the basis $\{ \ket{x} : x \in \{0, 1\}^n \}$ of $\C^{2^n} = (\C^2)^{\otimes n}$, called the \textit{computational basis}. We usually talk about a quantum register. The classical state  of a register $\mathsf{X}$ is represented by a finite alphabet $\Sigma$. The complex Euclidean space associated with $\mathsf{X}$ is denoted by $\X = \C^\Sigma$. Therefore, when we use the computational basis, we are using the alphabet $\Sigma = \{0, 1\}^2$ of binary strings of length $n$. When we are working more than one registers, say $(\mathsf{X}_1, \dots, \mathsf{X}_k)$, with alphabets $(\Sigma_1, \dots, \Sigma_k)$, the state space is $\X_1 \otimes \cdots \otimes \X_k$ where $\X_j = \C^{\Sigma_j}$, i.e., the tensor product of the individual spaces.  
+
+One the most used operations in quantum computing is the quantum Fourier transform (QFT). For an integer $N > 0$, define $\omega_N = e^{2\pi i / N}$. QFT over the group $\Z_N$ is defined by
+\[ \mathrm{QFT}_N: \ket{x} \mapsto \frac{1}{\sqrt{N}} \sum_{y \in \Z_N} \omega_N^{xy} \ket{y}. \]
+The above is defined for a basis element $\ket{x}$ but it can be extended to the whole space by linearity, for a general superposition we have
+\[ \mathrm{QFT}_N: \sum_{x \in \Z_N} \alpha_x \ket{x} \mapsto \sum_{y \in \Z_N} \widehat{\alpha}(y) \ket{y} \]
+where $\widehat{\alpha}$ is the classical Fourier transform of the function $\alpha: \Z_N \rightarrow \C$ defined by $\alpha(x) = \alpha_x$. QFT over $\Z_N$ can be done in $\poly(\log N)$ operations.
+
+The Fourier transform over a finite abelian group $G$ is usually stated using the \textit{linear representations} of $G$. Since $G$ is abelian, a representation of $G$ is a group homomorphism $\rho: G \rightarrow \C$. In this case, the representations of $G$ can be identified with the \textit{characters} of $G$. See Serre's book \cite{serre1977linear} for an introduction to representation theory. We denote by $\widehat{G}$ the set of all (inequivalent) characters of $G$. The Fourier transform of a function $f: G \rightarrow \C$ at a character $\chi \in \widehat{G}$ is defined by
+\[ \widehat{f}(\chi) = \frac{1}{\sqrt{\abs{G}}} \sum_{x \in G} f(x)\chi(x). \]
+The Fourier transform of $f$ is the vector $(\widehat{f}(\chi))_{\chi \in \widehat{G}}$. This is a unitary operation between vector spaces of dimension $\abs{G}$. The quantum Fourier transform over $G$ is defined by
+\[ \mathrm{QFT}_G: \ket{x} \mapsto \frac{1}{\sqrt{\abs{G}}} \sum_{\chi \in \widehat{G}} \chi(x) \ket{\chi}. \]
+
+Any finite abelian group $G$ can be written as a product of groups like $\Z_N$. If we write $G = \Z_{N_1} \times \cdots \times \Z_{N_k}$ then QFT over $G$ is
+\[ \mathrm{QFT}_G = \mathrm{QFT}_{N_1} \otimes \cdots \otimes \mathrm{QFT}_{N_k}.  \]
+Therefore, we can efficiently, i.e., in time $\poly(\log \abs{G})$, compute QFT over finite abelian groups. For 
+any $\bm{x} = (x_1, \dots, x_k) \in G$, the function $\chi_{\bm{x}}: G \rightarrow \C$ define by
+\begin{equation}
+\label{equ:char}
+	\chi_{\bm{x}}(\bm{y}) = e^{2\pi i \left( \frac{x_1y_1}{N_1} + \cdots + \frac{x_ky_k}{N_1} 
+	\right)}
+\end{equation}
+is a character of $G$, and the set $\{ \chi_{\bm{x}}: \bm{x} \in G \}$ is a complete set of 
+characters of $G$. We can then explicitly write the quantum Fourier transform of $x$ as
+\[ \mathrm{QFT}_G \ket{x_1, \dots, x_k} = \sum_{\bm{y} \in G} \chi_{\bm{y}}(\bm{x}) \ket{\bm{y}} = 
+\sum_{(y_1, \dots, y_k) \in G} e^{2\pi i \left( \frac{x_1y_1}{N_1} + \cdots + \frac{x_ky_k}{N_1} 
+\right)} \ket{y_1, \dots, y_k}. \]
+
+\paragraph{The hidden subgroup problem.}
+Let $f: G \rightarrow S$ be an efficiently computable function from a finite group $G$ to a finite 
+set $S$. Then $f$ is said to hide a subgroup $H \le G$ if the following holds: $f(x) = f(y)$ if and 
+only if $xy^{-1} \in H$ for all $x, y \in G$. The hidden subgroup problem (HSP) is to compute a 
+generating set for $H$ given access to $f$.
+
+An algorithm for HSP is said to be efficient if it runs in $\poly(\log \abs{G})$ time and memory. 
+Although no efficient algorithm is known for the general HSP, there are efficient quantum algorithms 
+for the abelian HSP, i.e., when $G$ is abelian \cite{hallgren2003hidden, kaye2007introduction}. The abelian HSP can be completely solved using a 
+technique called weak Fourier sampling. To have a closer look at the runtime of the HSP algorithm, 
+we briefly discuss it here.
+
+\begin{algo-thm}[Weak Fourier sampling]
+	\label{alg:wfs}
+	Given a function $f: G \rightarrow S$ that hides a subgroup $H \le G$, sample a	character $\chi \in \widehat{G}$ such that $H \le \ker\chi$.
+	\begin{enumerate}[topsep = 0pt, itemsep = 0pt, parsep = 0pt]
+		\item Create a superposition over the group $G$ and query $f$ in an ancilla register to 
+		obtain the state $\frac{1}{\sqrt{\abs{G}}} \sum_{x \in G} \ket{x, f(x)}$.
+		\item Measure the second register. Since $f$ hides $H$, the resulting state will be the  
+		superposition $\ket{\psi} := \frac{1}{\sqrt{\abs{H}}} \sum_{h \in H} \ket{ch, f(ch)}$ 
+		over a coset $cH$ for some uniformly random $c \in G$.
+		\item Apply the quantum Fourier transform to the state $\ket{\psi}$ to obtain
+		\[ \ket{\phi} := \frac{1}{\sqrt{\abs{G}\abs{H}}} \sum_{\chi \in \widehat{G}} \sum_{h \in H} 
+		\chi(ch) \ket{\chi}. \]
+		\item\label{step:msur-rep} Measure the state $\ket{\phi}$ to obtain a character $\chi$.
+	\end{enumerate}
+\end{algo-thm}
+
+It is not hard to show that the subgroup $H$ is contained in the kernel of the representation 
+obtained in Step \ref{step:msur-rep}; see \cite{hallgren2003hidden}. Note that, when $G$ is abelian, 
+a representation of $G$ is a homomorphism $\rho: G \rightarrow \C^\times$, and $\ker \rho = \{ g \in 
+G \mid \rho(g) = 1 \}$. 
+
+\begin{algo-thm}[Abelian HSP]
+	\label{alg:ahsp}
+	Given a function $f: G \rightarrow S$ that hides a subgroup $H \le G$, compute a set of 
+	generators for $H$.
+	\begin{enumerate}[topsep = 0pt, itemsep = 0pt, parsep = 0pt]
+		\item Set $s := 4\log \abs{G}$
+		\item\label{step:hsp:loop} For $i = 1, \dots, s$, perform a weak Fourier sampling to obtain 
+		a representation $\rho_i$.
+		\item\label{step:ker} Output a set of generators for $K = \bigcap_{i = 1}^s \ker \rho_i$.
+	\end{enumerate}
+\end{algo-thm}
+
+\begin{theorem}[{\cite[Theorem 4.3]{hallgren2003hidden}}]
+	Algorithm \ref{alg:ahsp} returns a set of generators for $H$ with probability at least $1 - 
+	2e^{-\log \abs{G} / 8}$.
+\end{theorem}
+
+\begin{theorem}
+	\label{thm:ahsp-time}
+	Algorithm \ref{alg:ahsp} requires $O(\log \abs{G})$ evaluations of the function $f$ and 
+	$O(\log^3 \abs{G})$ elementary operations.
+\end{theorem}
+\begin{proof}
+	Step \ref{step:hsp:loop} of the algorithm performs $4\log \abs{G}$ weak Fourier samplings. Each 
+	weak Fourier sampling is done at the cost of one application of the quantum Fourier transform 
+	$F_G$ and one query to the function $f$. The cost of applying $F_G$ is $O(\log \abs{G} \log\log 
+	\abs{G})$ elementary operations \cite{cleve1998quantum}. The total cost of Step 
+	\ref{step:hsp:loop} is then $O(\log \abs{G})$ queries to $f$ and $O(\log^2 \abs{G} \log\log 
+	\abs{G})$ elementary operations. To compute the cost of Step \ref{step:ker}, note that given 
+	$\rho \in \hat{G}$ we have $\ker \rho = \ker \chi_{\bm{a}}$ for a unique $\bm{a} \in G$, where  
+	$\chi_{\bm{a}}$ is define as in \eqref{equ:char}, so we have $\ker \rho = \{ \bm{x} \in G: 
+	\frac{a_1x_1}{N_1} + \cdots + \frac{a_kx_k}{N_k} = 0 \bmod 1 \}$. Let $A$ be a matrix with rows 
+	of the form $(\frac{a_1}{N_1}, \dots, \frac{a_k}{N_k})$ for all such $\bm{a}$. Then a set of 
+	generators for $K$ is the same as a set of generators of the kernel of $A$, which can be 
+	obtained using $O(\log^3 \abs{G})$ elementary operations.
+\end{proof}
+
+
+
+
+\section{Hard homogeneous spaces}
+\label{sec:hhs}
+
+Let $G$ be a finite abelian group. A set $X$ equipped with an action of $G$ is called a $G$-space. 
+The action of $G$ on $X$ is transitive if for any $x_1, x_2 \in X$ there exists a $g \in 
+G$ such that $gx_1 = x_2$. The action is free if for any $x \in X$ and $g_1, g_2 \in G$ such that 
+$g_1x = g_2x$ we have $g_1 = g_2$. 
+\begin{definition}
+	A homogeneous space for $G$, or a $G$-torsor, is a $G$-space $X$ on which $G$ acts freely and 
+	transitively.
+\end{definition}
+Equivalently, a set $X$ is a homogeneous space for $G$ if for any given pair $x_1, x_2 \in X$ there 
+exists a unique $g \in G$ such that $gx_1 = x_2$. In \cite{couveignes2006hard}, Couveignes defines a 
+\textit{hard homogeneous space} as follows.
+\begin{definition}
+\label{def:hhs}
+	A $G$-torsor $X$ is called a hard homogeneous space if $G$ and $X$ satisfy certain 
+	computational properties. The following operations are required to be easy:
+	\begin{itemize}[topsep = 0pt, itemsep = 0pt, parsep = 0pt]
+		\item \textit{Group operations}. Given $g_1, g_2 \in G$, compute $g_1^{-1}$ and $g_1g_2$ 
+		and decide if $g_1 = g_2$.
+		\item \textit{Sampling}. Sample random elements from $G$ with distribution close to uniform.
+		\item \textit{Membership}. Given (a string) $x$, decide if $x$ represents an element of $X$.
+		\item \textit{Equality}. Given $x_1, x_2 \in X$, decide if $x_1 = x_2$.
+		\item \textit{Action}. Given $g \in G$ and $x \in X$, compute $gx \in X$.
+	\end{itemize}
+	The following problems are required to be hard:
+	\begin{itemize}[topsep = 0pt, itemsep = 0pt, parsep = 0pt]
+		\item \textit{Vectorization}. Given $x_1, x_2 \in X$, find $g \in G$ such that $gx_1 = x_2$.
+		\item \textit{Parallelization}. Given $x_1, x_2, x_3 \in X$ such that $gx_1 = x_2$ for some 
+		$g \in G$, find $x_4 = gx_3$.
+	\end{itemize}
+\end{definition}
+To simplify the complexity statements, we shall refer to the first set of operations in Definition \ref{def:hhs} as \textit{elementary operations}.
+
+\paragraph{Key exchange.}
+The commutativity of the group action leads to a protocol for key exchange that is a natural 
+generalization of the classical Diffie-Hellman: let $x_0$ be a fixed public parameter. Alice selects 
+a random $a \in G$ as her private key and publishes $ax_0$ as her public key. Bob does the same for 
+a random $b \in G$. A shared secret between Alice and Bob can then be computed as $a(bx_0)$ and 
+$b(ax_0)$ respectively. The private keys are protected by the hardness of the vectorization problem, 
+and the shared secrete is protected by the hardness of the parallelization problem. 
+
+An example of a hard homogeneous space is a set of supersingular elliptic curves defined over a 
+finite field $\F_p$ on which the ideal class group of the endomorphism ring of these elliptic curves 
+act. The action of the ideal class group is computed using isogenies. We shall discuss this space in 
+more details in Section \ref{sec:csidh}. A classical example of a hard homogeneous space is as 
+follows. Let $X$ be a cyclic group of order $n$ and let $G = \aut(X)$ be the group of automorphisms 
+of $X$. Then an element of $G$ maps a generator of $X$ to another generator, and hence $G \simeq (\Z 
+/ n\Z)^*$. The classical Diffie-Hellman key exchange on $X$ is then given by the above scheme.
+
+
+
+
+
+\section{A Quantum Reduction}
+
+Let $X$ be a hard homogeneous space for a finite abelian group $G$ and let $x_0 \in X$ be fixed. Let 
+$g_1, \dots, g_k \in G$ be a set of generators so that we have an isomorphism $G \cong \lrang{g_1} 
+\oplus \cdots \oplus \lrang{g_k}$. Such an isomorphism can be efficiently computed using the quantum
+algorithm of \cite{cheung2001decomposing}. We fix this isomorphism and assume it is precomputed. If 
+$N_i$ is the order of $g_i$, then the above isomorphism induces the isomorphism $\bigoplus_{i = 1}^k 
+\Z / N_i \Z \cong G$ defined by $(y_1, \dots, y_k) \mapsto g_1^{y_1} \cdots g_k^{y_k}$.
+
+\begin{definition}
+	The key exchange oracle for $(X, x_0)$ is a function $\kex: X \times X \rightarrow X$ defined as 
+	follows. Given any pair of distinct elements $x_1, x_2 \in X$, since $X$ is a $G$-torsor, there 
+	exist unique $g_1, g_2 \in G$ such that $x_1 = g_1x_0$ and $x_2 = g_2x_0$. Let $\kex(x_1, x_2) = 
+	g_1g_2x_0$.
+\end{definition}
+
+The restriction that the inputs of $\kex$ must be distinct is based on the practical assumption for 
+key exchange protocols where it is assumed that each party has a unique public key. Given an element 
+$x = gx_0 \in X$ where $g \in G$ is unknown, we show that there is an efficient quantum algorithm 
+for finding $g$ given access to the key exchange oracle $\kex$.
+
+\begin{lemma}
+\label{lem:kex-pow}
+	Given $gx_0 \in X$ for some (possibly unknown) $g \in G$, the element $g^nx_0$ can be computed 
+	using $O(\log n)$ calls to the key exchange oracle $\kex$ and $O(\log n)$ elementary operations.
+\end{lemma}
+\begin{proof}
+	To compute $g^2x_0$, we first compute the action $g_1gx_0 = g_1(gx_0)$ for an element $g_1 \ne 
+	1$ of $G$. Then we can call $\kex$ with input $(g_1gx_0, gx_0)$ to obtain $g_1g^2x_0$, and then 
+	compute the action $g_1^{-1}(g_1g^2x_0)$. Repeating the same for $g^2x_0$ we can compute 
+	$g^{2^i}x_0$ for any integer $i > 0$. This leads to a binary exponentiation method for computing 
+	$g^nx_0$ for any integer $n$.
+\end{proof}
+
+Let $N = N_1N_2 \cdots N_k$ be the size of the group $G$ and let 
+\[ T = \Z / N \Z \oplus \Z / N_1 \Z \oplus \cdots \oplus \Z / N_k \Z. \]
+For an unknown $g \in G$, denote by $f$ the composition $ T \rightarrow G \rightarrow X$ where the 
+first map is defined by $(y, y_1, \dots, y_k) \mapsto g^y g_1^{y_1} \cdots g_k^{y_k}$ and the second 
+is defined by $h \mapsto hx_0$. In other words
+\begin{equation}
+\label{equ:map-f}
+	\begin{array}{lrll}
+		f: & T & \longrightarrow & X \\
+		& (y, y_1, \dots, y_k) & \longmapsto & g^y g_1^{y_1} \cdots g_k^{y_k} x_0.
+	\end{array}
+\end{equation}
+
+\begin{proposition}
+\label{prop:f-hide}
+	Let $g = g_1^{x_1} \cdots g_2^{x_k}$ for some integers $0 \le x_i < N_i$, $i = 1, \dots, k$. 
+	Then the map $f$ defined as in \eqref{equ:map-f} hides the cyclic subgroup $K = \lrang{(1, -x_1, 
+	\dots, -x_k)} \le T$.
+\end{proposition}
+\begin{proof}
+	Let $\bm{y} = (y, y_1, \dots, y_k)$ and $\bm{z} = (z, z_1, \dots, z_k)$ be elements of $T$ and 
+	assume $f(\bm{y}) = f(\bm{z})$. Then
+	\begin{align*}
+		x_0 
+		& = g^{y - z} g_1^{y_1 - z_1} \cdots g_k^{y_k - z_k} x_0 \\
+		& = g_1^{x_1(y - z) + y_1 - z_1} \cdots g_k^{x_k(y - z) + y_k - z_k} x_0.
+	\end{align*}
+	Since the action of $G$ on $X$ is free, we have $x_i(y - z) + y_i - z_i = 0 \bmod N_i$ for all 
+	$i = 1, \dots, k$. Therefore, $\bm{y} - \bm{z} = (y - z)(1, -x_1, \dots, -x_k) \in K$. 
+	Conversely, suppose $\bm{y} - \bm{z} = t(1, -x_1, \dots, -x_k)$ for some integer $t \ge 0$. Then 
+	\begin{align*}
+		f(\bm{y}) 
+		& = f(\bm{z} + t(1, -x_1, \dots, -x_k)) \\
+		& = g^{t + z} g_1^{z_1 - tx_1} \cdots g_k^{z_k - tx_k}x_0 \\
+		& = g^z g_1^{z_1} \cdots g_k^{z_k} (g_1^{tx_1} \cdots g_k^{tx_k} g_1^{-tx_1} \cdots 
+		g_k^{-tx_k} x_0) \\
+		& = f(\bm{z}) \qedhere
+	\end{align*} 
+\end{proof}
+
+\begin{lemma}
+	\label{lem:compute-f}
+	The map $f$ defined as in \eqref{equ:map-f} can be computed using $O(\log \abs{G})$ calls to the 
+	key exchange oracle $\kex$ and $O(\log \abs{G})$ elementary operations.
+\end{lemma}
+\begin{proof}
+	Given $(y, y_1, \dots, y_k) \in T$, by Lemma \ref{lem:kex-pow}, the element $g^yx_0$ can be 
+	computed using $O(\log N) = O(\log \abs{G})$ calls to $\kex$ and $O(\log \abs{G})$ elementary 
+	operations. Each of the elements $g_i^{y_i}x_0$ can be computed using $O(\log N_i)$ calls to 
+	$\kex$ and $O(\log N_i)$ elementary operations. The cost of computing all the elements $g^yx_0, 
+	g_1^{y_1}x_0, \dots, g_k^{y_k}x_0$ is then $O(\log \abs{G} + \sum_{i = 1}^k \log N_i) = O(\log 
+	\abs{G})$. Now, the element $g^y g_1^{y_1} \cdots g_k^{y_k}x_0$ can be computed using $O(k) \in 
+	O(\log \abs{G})$ calls to $\kex$. 
+\end{proof}
+
+Putting all the above together, we obtain the following:
+\begin{theorem}
+\label{thm:reduc}
+	Given any $x_1 \in X$, let $g \in G$ be the unique element such $x_1 = gx_0$. Then there is a 
+	polynomial time quantum algorithm that finds $g$ using $O(\log^2 \abs{G})$ calls to the key 
+	exchange oracle $\kex$ and $O(\log^3 \abs{G})$ elementary operations.
+\end{theorem}
+\begin{proof}
+	Let $g = g_1^{x_1} \cdots g_2^{x_k}$ for some integers $0 \le x_i < N_i$, $i = 1, \dots, k$. 
+	Then, by Proposition \ref{prop:f-hide}, the map $f$ defined as in \eqref{equ:map-f} hides the 
+	subgroup $K = \lrang{(1, -x_1, \dots, -x_k)} \le T$. By Theorem \ref{thm:ahsp-time}, a 
+	generating set for $K$, and hence the $x_i$'s, can be computed using $O(\log \abs{G})$ 
+	evaluations of $f$ and $O(\log^3 \abs{G})$ elementary operations. Since, by Lemma 
+	\ref{lem:compute-f}, each evaluations of $f$ takes $O(\log \abs{G})$ calls to $\kex$ and $O(\log 
+	\abs{G})$ elementary operations, the theorem follows.
+\end{proof}
+
+
+
+
+
+
+
+
+
+\section{The commutative isogeny key exchange}
+\label{sec:csidh}
+
+In this section, we briefly discuss a special case of Theorem \ref{thm:reduc} for ideal class groups 
+and elliptic curves. For a good reference on elliptic curves see \cite{silverman2009arithmetic} or 
+\cite{washington2003elliptic}. Let $p$ be a prime and let $q = p^n$ for an integer $n > 0$. Given 
+elliptic curves $E, E'$ over $\F_q$, an isogeny $\phi: E \rightarrow E$ is a rational map that is 
+also a group homomorphism. For any finite subgroup $H \le E$ there is a separable isogeny $\phi_H: E 
+\rightarrow E / H$, with $\ker \phi_H = H$, that is unique up to isomorphism. An endomorphism of $E$ 
+is an isogeny from $E$ to itself. We denote by $\groupofend_F(E)$ the endomorphism ring of $E$ define 
+over an extension $F / \F_q$, and by $\groupofend(E)$ the endomorphism ring of $E$ defined over the 
+algebraic closure of $\F_q$. The elliptic curve $E$ is called ordinary if $\groupofend(E)$ is an 
+order in an imaginary quadratic extension; otherwise $E$ is called supersingular.
+
+Let $\O = \groupofend(E)$ be an order in an imaginary quadratic extension $K$ of $\Q$. The set of 
+invertible ideals of $\O$ in $K$ modulo the set of principal ideals form an abelian group under 
+multiplication called the ideal class group. We denote the class group of $\O$ by $\clo$. The size 
+of $\clo$ is called the class number of $\O$. Let $\mathfrak{a} \in \clo$ be an ideal with norm 
+coprime to $p$. The $\mathfrak{a}$-torsion subgroup of $E$ is defined as
+\[ E[\mathfrak{a}] = \bigcap_{\alpha \in \mathfrak{a}} \ker \alpha. \]
+This is a finite subgroup of $E$ and so there is a unique separable isogeny $\phi_{\mathfrak{a}}: E 
+\rightarrow E / E[\mathfrak{a}] = E_{\mathfrak{a}}$. One can show that $\groupofend(E_{\mathfrak{a}}) 
+= \O$. This induces an action of $\clo$ on the set of elliptic curves with endomorphism ring $\O$, 
+where $\mathfrak{a} E = E / E_{\mathfrak{a}}$.
+\begin{problem}
+\label{prob:isog}
+	Given two elliptic curves $E$ and $E'$ over $\F_q$ with the same enodmorphism ring $\O$, find an 
+	ideal $\mathfrak{a} \in \clo$ such that $\mathfrak{a} E = E'$.
+\end{problem}
+If Problem $\ref{prob:isog}$ is hard then we have the following hard homogeneous space.
+
+\paragraph{Elliptic curve HHS.}
+Let $\O \subset \Q(\sqrt{-D})$ be an order, where $D$ is a positive integer, and let $\elli_q(\O)$ 
+be the set of elliptic curves over $\F_q$ with endomorphism ring $\O$. Then the action
+\[
+\begin{array}{rll}
+	\clo \times \elli_q(\O) & \longrightarrow & \elli_q(\O) \\
+	(\mathfrak{a}, E) & \longmapsto & \mathfrak{a} E
+\end{array}
+\]
+is free and transitive. To make the pair $\clo, \elli_q(\O)$ into an HHS, the action $\mathfrak{a} 
+E$ needs to be computed efficiently for an arbitrary $\mathfrak{a} \in \clo$. This, as suggested by 
+Couveignes \cite{couveignes2006hard}, can be done by representing the elements of $\clo$ as products 
+of prime ideals of small norm. More precisely, let $\mathfrak{l}_1, \dots, \mathfrak{l}_n \in \clo$ 
+be a set of non-principal prime ideals of small norms $\ell_i$ such that any $\mathfrak{a} \in \clo$ 
+can be written as $\mathfrak{a} = \mathfrak{l}_1^{e_1} \cdots \mathfrak{l}_n^{e_n}$ where the $e_i$ 
+are integers in the range $[-M, M]$ for a not too large $M$. Then $\mathfrak{a} E$ can be computed 
+by composing isogenies of degree $\ell_i$; see \cite{de2018towards} for details.
+
+Using the same idea as in \cite{de2018towards} for computing $\mathfrak{a} E$, Castryck \textit{et 
+al.}~\cite{castryck2018csidh} proposed a significantly more efficient key exchange based on a 
+different HHS. Instead of ordinary elliptic curves, their scheme, called CSIDH, is based on
+supersingular curves $E$ defined over $\F_p$. For such curves, while $\groupofend(E)$ is a maximal 
+order in some quaternion algebra, the smaller ring $\groupofend_F{\F_p}(E)$ is an order in 
+$\Q(\sqrt{-p})$. The prime $p$ is chosen such that $p = 4 \ell_1 \cdots \ell_n - 1$ where $\ell_1, 
+\dots, \ell_n$ are the smallest $n$ primes. For example, to cover an ideal class group of size 
+$\approx 2^{256}$ with products of the form $\mathfrak{l}_1^{e_1} \cdots \mathfrak{l}_n^{e_n}$, it 
+is heuristically enough to take $n = 74$ and $-5 \le e_i \le 5$. The above choice of $p$ guarantees 
+a decomposition $\ell_i \O = \mathfrak{l}_i \bar{\mathfrak{l}}_i$ for $\mathfrak{l}_i = (\ell_i, \pi 
+- 1)$ and $\bar{\mathfrak{l}}_i = (\ell_i, \pi + 1)$, where $\pi$ is the Frobenius endomorphism. The 
+action of $\mathfrak{l}_i$ (and $\bar{\mathfrak{l}}_i$) can then be computed efficiently using the 
+V\'elu formulas.
+
+\begin{theorem}
+	The CRS and CSIDH key exchanges are provably secure. More precisely, given access to a key 
+	exchange oracle $\kex$ and given two elliptic curves $E$ and $E'$ over $\F_p$ such that
+	\begin{itemize}[topsep = 0pt, itemsep = 0pt, parsep = 0pt]
+		\item $E, E'$ are ordinary with $\groupofend(E) = \groupofend(E') = \O$, or
+		\item $E, E'$ are supersingular with $\groupofend_{\F_p}(E) = \groupofend_{\F_p}(E') = \O$,
+	\end{itemize}
+	there is an efficient bounded error quantum algorithm $Q$ for finding $\mathfrak{a} \in 
+	\O$ such that $E' = \mathfrak{a} E$. The algorithm $\mathsf{A}$ uses $O(\log^2 p)$ calls to the 
+	key exchange oracle $\kex$ and $O(\log^3 p)$ elementary operations.
+\end{theorem}
+\begin{proof}
+    We have $\abs{\clo} = O(\sqrt{p} \log p)$.
+\end{proof}
+
+
+
+
+
+
+
+
+\newpage
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+
+
+
