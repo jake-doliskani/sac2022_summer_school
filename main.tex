@@ -46,11 +46,11 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{conjecture}[theorem]{Conjecture}
 \newtheorem{example}[theorem]{Example}
-\newtheorem{algo-thm}{Algorithm}
-\newtheorem*{remark}{Remark}
-\newtheorem{note}{Note}
-\newtheorem*{problem}{Problem}
-\newtheorem*{fact}{Fact}
+\newtheorem{algo-thm}[theorem]{Algorithm}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{note}[theorem]{Note}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{fact}[theorem]{Fact}
 
 
 
@@ -315,7 +315,7 @@ $N_i$ is the order of $g_i$, then the above isomorphism induces the isomorphism 
 \begin{definition}
 	The key exchange oracle for $(X, x_0)$ is a function $\kex: X \times X \rightarrow X$ defined as 
 	follows. Given any pair of distinct elements $x_1, x_2 \in X$, since $X$ is a $G$-torsor, there 
-	exist unique $g_1, g_2 \in G$ such that $x_1 = g_1x_0$ and $x_2 = g_2x_0$. Let $\kex(x_1, x_2) = 
+	exist unique $g_1, g_2 \in G$ such that $x_1 = g_1x_0$ and $x_2 = g_2x_0$. Define $\kex(x_1, x_2) = 
 	g_1g_2x_0$.
 \end{definition}
 
@@ -353,7 +353,7 @@ is defined by $h \mapsto hx_0$. In other words
 \begin{proposition}
 \label{prop:f-hide}
 	Let $g = g_1^{x_1} \cdots g_2^{x_k}$ for some integers $0 \le x_i < N_i$, $i = 1, \dots, k$. 
-	Then the map $f$ defined as in \eqref{equ:map-f} hides the cyclic subgroup $K = \lrang{(1, -x_1, 
+	Then the map $f$ defined in \eqref{equ:map-f} hides the cyclic subgroup $K = \lrang{(1, -x_1, 
 	\dots, -x_k)} \le T$.
 \end{proposition}
 \begin{proof}
@@ -379,12 +379,12 @@ is defined by $h \mapsto hx_0$. In other words
 
 \begin{lemma}
 	\label{lem:compute-f}
-	The map $f$ defined as in \eqref{equ:map-f} can be computed using $O(\log \abs{G})$ calls to the 
+	The map $f$ defined in \eqref{equ:map-f} can be computed using $O(\log \abs{G})$ calls to the 
 	key exchange oracle $\kex$ and $O(\log \abs{G})$ elementary operations.
 \end{lemma}
 \begin{proof}
 	Given $(y, y_1, \dots, y_k) \in T$, by Lemma \ref{lem:kex-pow}, the element $g^yx_0$ can be 
-	computed using $O(\log N) = O(\log \abs{G})$ calls to $\kex$ and $O(\log \abs{G})$ elementary 
+	computed using $O(\log y) = O(\log \abs{G})$ calls to $\kex$ and $O(\log \abs{G})$ elementary 
 	operations. Each of the elements $g_i^{y_i}x_0$ can be computed using $O(\log N_i)$ calls to 
 	$\kex$ and $O(\log N_i)$ elementary operations. The cost of computing all the elements $g^yx_0, 
 	g_1^{y_1}x_0, \dots, g_k^{y_k}x_0$ is then $O(\log \abs{G} + \sum_{i = 1}^k \log N_i) = O(\log 
@@ -401,7 +401,7 @@ Putting all the above together, we obtain the following:
 \end{theorem}
 \begin{proof}
 	Let $g = g_1^{x_1} \cdots g_2^{x_k}$ for some integers $0 \le x_i < N_i$, $i = 1, \dots, k$. 
-	Then, by Proposition \ref{prop:f-hide}, the map $f$ defined as in \eqref{equ:map-f} hides the 
+	Then, by Proposition \ref{prop:f-hide}, the map $f$ defined in \eqref{equ:map-f} hides the 
 	subgroup $K = \lrang{(1, -x_1, \dots, -x_k)} \le T$. By Theorem \ref{thm:ahsp-time}, a 
 	generating set for $K$, and hence the $x_i$'s, can be computed using $O(\log \abs{G})$ 
 	evaluations of $f$ and $O(\log^3 \abs{G})$ elementary operations. Since, by Lemma 
@@ -441,11 +441,13 @@ This is a finite subgroup of $E$ and so there is a unique separable isogeny $\ph
 \rightarrow E / E[\mathfrak{a}] = E_{\mathfrak{a}}$. One can show that $\groupofend(E_{\mathfrak{a}}) 
 = \O$. This induces an action of $\clo$ on the set of elliptic curves with endomorphism ring $\O$, 
 where $\mathfrak{a} E = E / E_{\mathfrak{a}}$.
+
 \begin{problem}
 \label{prob:isog}
 	Given two elliptic curves $E$ and $E'$ over $\F_q$ with the same enodmorphism ring $\O$, find an 
 	ideal $\mathfrak{a} \in \clo$ such that $\mathfrak{a} E = E'$.
 \end{problem}
+
 If Problem $\ref{prob:isog}$ is hard then we have the following hard homogeneous space.
 
 \paragraph{Elliptic curve HHS.}
@@ -487,8 +489,8 @@ V\'elu formulas.
 		\item $E, E'$ are ordinary with $\groupofend(E) = \groupofend(E') = \O$, or
 		\item $E, E'$ are supersingular with $\groupofend_{\F_p}(E) = \groupofend_{\F_p}(E') = \O$,
 	\end{itemize}
-	there is an efficient bounded error quantum algorithm $Q$ for finding $\mathfrak{a} \in 
-	\O$ such that $E' = \mathfrak{a} E$. The algorithm $\mathsf{A}$ uses $O(\log^2 p)$ calls to the 
+	there is a polynomial time quantum algorithm $Q$ for finding $\mathfrak{a} \in 
+	\O$ such that $E' = \mathfrak{a} E$. The algorithm $Q$ uses $O(\log^2 p)$ calls to the 
 	key exchange oracle $\kex$ and $O(\log^3 p)$ elementary operations.
 \end{theorem}
 \begin{proof}
