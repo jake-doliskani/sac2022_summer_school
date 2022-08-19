@@ -141,19 +141,20 @@ We follow \cite{watrous2018theory} for our quantum computing notations. A qubit 
 \[ \alpha\ket{0} + \beta\ket{1} \in \C^2 \]
 where $\abs{\alpha}^2 + \abs{\beta}^2 = 1$. For the state of an $n$-qubit quantum system we write
 \[ \sum_{x \in \{0, 1\}^n} \alpha_x \ket{x} \in \C^{2^n} \]
-where $\sum_x \abs{\alpha_x}^2 = 1$. In the above, we have used the basis $\{ \ket{x} : x \in \{0, 1\}^n \}$ of $\C^{2^n} = (\C^2)^{\otimes n}$, called the \textit{computational basis}. We usually talk about a quantum register. The classical state  of a register $\mathsf{X}$ is represented by a finite alphabet $\Sigma$. The complex Euclidean space associated with $\mathsf{X}$ is denoted by $\X = \C^\Sigma$. Therefore, when we use the computational basis, we are using the alphabet $\Sigma = \{0, 1\}^2$ of binary strings of length $n$. When we are working more than one registers, say $(\mathsf{X}_1, \dots, \mathsf{X}_k)$, with alphabets $(\Sigma_1, \dots, \Sigma_k)$, the state space is $\X_1 \otimes \cdots \otimes \X_k$ where $\X_j = \C^{\Sigma_j}$, i.e., the tensor product of the individual spaces.  
+where $\sum_x \abs{\alpha_x}^2 = 1$. In the above, we have used the basis $\{ \ket{x} : x \in \{0, 1\}^n \}$ of $\C^{2^n} = (\C^2)^{\otimes n}$, called the \textit{computational basis}. We usually talk about a quantum register. The classical state  of a register $\mathsf{X}$ is represented by a finite alphabet $\Sigma$. The complex Euclidean space associated with $\mathsf{X}$ is denoted by $\X = \C^\Sigma$. Therefore, when we use the computational basis, we are using the alphabet $\Sigma = \{0, 1\}^2$ of binary strings of length $n$. When we are working with more than one register, say $(\mathsf{X}_1, \dots, \mathsf{X}_k)$, with alphabets $(\Sigma_1, \dots, \Sigma_k)$, the state space is $\X_1 \otimes \cdots \otimes \X_k$ where $\X_j = \C^{\Sigma_j}$, i.e., the tensor product of the individual spaces.  
 
 
 
-\section{Fourier Transform}
 
-One the most used operations in quantum computing is the quantum Fourier transform (QFT). For an integer $N > 0$, define $\omega_N = e^{2\pi i / N}$. QFT over the group $\Z_N$ is defined by
+\section{The Fourier Transform}
+
+One of the most used operations in quantum computing is the quantum Fourier transform (QFT). For an integer $N > 0$, define $\omega_N = e^{2\pi i / N}$. QFT over the group $\Z_N$ is defined by
 \[ \mathrm{QFT}_N: \ket{x} \mapsto \frac{1}{\sqrt{N}} \sum_{y \in \Z_N} \omega_N^{xy} \ket{y}. \]
-The above is defined for a basis element $\ket{x}$ but it can be extended to the whole space by linearity, for a general superposition we have
+for $x \in \Z_N$. For a general superposition we have
 \[ \mathrm{QFT}_N: \sum_{x \in \Z_N} \alpha_x \ket{x} \mapsto \sum_{y \in \Z_N} \widehat{\alpha}(y) \ket{y} \]
-where $\widehat{\alpha}$ is the classical Fourier transform of the function $\alpha: \Z_N \rightarrow \C$ defined by $\alpha(x) = \alpha_x$. QFT over $\Z_N$ can be done in $\poly(\log N)$ operations.
+where $\widehat{\alpha}$ is the classical Fourier transform of the function $\alpha: \Z_N \rightarrow \C$ defined by $\alpha(x) = \alpha_x$. QFT over $\Z_N$ can be applied in $\poly(\log N)$ operations.
 
-The Fourier transform over a finite abelian group $G$ is usually stated using the \textit{linear representations} of $G$. Since $G$ is abelian, a representation of $G$ is a group homomorphism $\rho: G \rightarrow \C$. In this case, the representations of $G$ can be identified with the \textit{characters} of $G$. See Serre's book \cite{serre1977linear} for an introduction to representation theory. We denote by $\widehat{G}$ the set of all (inequivalent) characters of $G$. The Fourier transform of a function $f: G \rightarrow \C$ at a character $\chi \in \widehat{G}$ is defined by
+The Fourier transform over a finite abelian group $G$ is usually stated using the \textit{linear representations} of $G$. Since $G$ is abelian, a representation of $G$ is a group homomorphism $\rho: G \rightarrow \C$. In this case, the representations of $G$ can be identified with the \textit{characters} of $G$, which are functions $\chi: G \rightarrow \C$. See Serre's book \cite{serre1977linear} for an introduction to representation theory. We denote by $\widehat{G}$ the set of all (inequivalent) characters of $G$. The Fourier transform of a function $f: G \rightarrow \C$ at a character $\chi \in \widehat{G}$ is defined by
 \[ \widehat{f}(\chi) = \frac{1}{\sqrt{\abs{G}}} \sum_{x \in G} f(x)\chi(x). \]
 The Fourier transform of $f$ is the vector $(\widehat{f}(\chi))_{\chi \in \widehat{G}}$. This is a unitary operation between vector spaces of dimension $\abs{G}$. The quantum Fourier transform over $G$ is defined by
 \[ \mathrm{QFT}_G: \ket{x} \mapsto \frac{1}{\sqrt{\abs{G}}} \sum_{\chi \in \widehat{G}} \chi(x) \ket{\chi}. \]
@@ -161,16 +162,16 @@ The Fourier transform of $f$ is the vector $(\widehat{f}(\chi))_{\chi \in \wideh
 Any finite abelian group $G$ can be written as a product of groups like $\Z_N$. If we write $G = \Z_{N_1} \times \cdots \times \Z_{N_k}$ then QFT over $G$ is
 \[ \mathrm{QFT}_G = \mathrm{QFT}_{N_1} \otimes \cdots \otimes \mathrm{QFT}_{N_k}.  \]
 Therefore, we can efficiently, i.e., in time $\poly(\log \abs{G})$, compute QFT over finite abelian groups. For 
-any $\bm{x} = (x_1, \dots, x_k) \in G$, the function $\chi_{\bm{x}}: G \rightarrow \C$ define by
+any $\bm{x} = (x_1, \dots, x_k) \in G$, where $x_j \in \Z_{N_j}$, the function $\chi_{\bm{x}}: G \rightarrow \C$ define by
 \begin{equation}
 \label{equ:char}
 	\chi_{\bm{x}}(\bm{y}) = e^{2\pi i \left( \frac{x_1y_1}{N_1} + \cdots + \frac{x_ky_k}{N_1} 
 	\right)}
 \end{equation}
 is a character of $G$, and the set $\{ \chi_{\bm{x}}: \bm{x} \in G \}$ is a complete set of 
-characters of $G$. We can then explicitly write the quantum Fourier transform of $x$ as
-\[ \mathrm{QFT}_G \ket{x_1, \dots, x_k} = \sum_{\bm{y} \in G} \chi_{\bm{y}}(\bm{x}) \ket{\bm{y}} = 
-\sum_{(y_1, \dots, y_k) \in G} e^{2\pi i \left( \frac{x_1y_1}{N_1} + \cdots + \frac{x_ky_k}{N_1} 
+characters of $G$. We can then explicitly write the quantum Fourier transform of $\bm{x}$ as
+\[ \mathrm{QFT}_G \ket{\bm{x}} = \sum_{\bm{y} \in G} \chi_{\bm{y}}(\bm{x}) \ket{\bm{y}} = 
+\sum_{(y_1, \dots, y_k) \in G} e^{2\pi i \left( \frac{x_1y_1}{N_1} + \cdots + \frac{x_ky_k}{N_k} 
 \right)} \ket{y_1, \dots, y_k}. \]
 
 
@@ -185,8 +186,7 @@ generating set for $H$ given access to $f$.
 An algorithm for HSP is said to be efficient if it runs in $\poly(\log \abs{G})$ time and memory. 
 Although no efficient algorithm is known for the general HSP, there are efficient quantum algorithms 
 for the abelian HSP, i.e., when $G$ is abelian \cite{hallgren2003hidden, kaye2007introduction}. The abelian HSP can be completely solved using a 
-technique called weak Fourier sampling. To have a closer look at the runtime of the HSP algorithm, 
-we briefly discuss it here.
+technique called weak Fourier sampling which we briefly discuss here.
 
 \begin{algo-thm}[Weak Fourier sampling]
 	\label{alg:wfs}
@@ -195,7 +195,7 @@ we briefly discuss it here.
 		\item Create a superposition over the group $G$ and query $f$ in an ancilla register to 
 		obtain the state $\frac{1}{\sqrt{\abs{G}}} \sum_{x \in G} \ket{x, f(x)}$.
 		\item Measure the second register. Since $f$ hides $H$, the resulting state will be the  
-		superposition $\ket{\psi} := \frac{1}{\sqrt{\abs{H}}} \sum_{h \in H} \ket{ch, f(ch)}$ 
+		superposition $\ket{\psi} := \frac{1}{\sqrt{\abs{H}}} \sum_{h \in H} \ket{ch}$ 
 		over a coset $cH$ for some uniformly random $c \in G$.
 		\item Apply the quantum Fourier transform to the state $\ket{\psi}$ to obtain
 		\[ \ket{\phi} := \frac{1}{\sqrt{\abs{G}\abs{H}}} \sum_{\chi \in \widehat{G}} \sum_{h \in H} 
@@ -204,10 +204,8 @@ we briefly discuss it here.
 	\end{enumerate}
 \end{algo-thm}
 
-It is not hard to show that the subgroup $H$ is contained in the kernel of the representation 
-obtained in Step \ref{step:msur-rep}; see \cite{hallgren2003hidden}. Note that, when $G$ is abelian, 
-a representation of $G$ is a homomorphism $\rho: G \rightarrow \C^\times$, and $\ker \rho = \{ g \in 
-G \mid \rho(g) = 1 \}$. 
+It is not hard to show that the subgroup $H$ is contained in the kernel of the character
+obtained in Step \ref{step:msur-rep} \cite{hallgren2003hidden}. 
 
 \begin{algo-thm}[Abelian HSP]
 	\label{alg:ahsp}
@@ -216,8 +214,8 @@ G \mid \rho(g) = 1 \}$.
 	\begin{enumerate}[topsep = 0pt, itemsep = 0pt, parsep = 0pt]
 		\item Set $s := 4\log \abs{G}$
 		\item\label{step:hsp:loop} For $i = 1, \dots, s$, perform a weak Fourier sampling to obtain 
-		a representation $\rho_i$.
-		\item\label{step:ker} Output a set of generators for $K = \bigcap_{i = 1}^s \ker \rho_i$.
+		a character $\chi_i$.
+		\item\label{step:ker} Output a set of generators for $K = \bigcap_{i = 1}^s \ker \chi_i$.
 	\end{enumerate}
 \end{algo-thm}
 
@@ -238,8 +236,8 @@ G \mid \rho(g) = 1 \}$.
 	\abs{G})$ elementary operations \cite{cleve1998quantum}. The total cost of Step 
 	\ref{step:hsp:loop} is then $O(\log \abs{G})$ queries to $f$ and $O(\log^2 \abs{G} \log\log 
 	\abs{G})$ elementary operations. To compute the cost of Step \ref{step:ker}, note that given 
-	$\rho \in \hat{G}$ we have $\ker \rho = \ker \chi_{\bm{a}}$ for a unique $\bm{a} \in G$, where  
-	$\chi_{\bm{a}}$ is define as in \eqref{equ:char}, so we have $\ker \rho = \{ \bm{x} \in G: 
+	$\chi \in \widehat{G}$ we have $\ker \chi = \ker \chi_{\bm{a}}$ for a unique $\bm{a} \in G$, where  
+	$\chi_{\bm{a}}$ is define as in \eqref{equ:char}. So, we have $\ker \chi = \{ \bm{x} \in G: 
 	\frac{a_1x_1}{N_1} + \cdots + \frac{a_kx_k}{N_k} = 0 \bmod 1 \}$. Let $A$ be a matrix with rows 
 	of the form $(\frac{a_1}{N_1}, \dots, \frac{a_k}{N_k})$ for all such $\bm{a}$. Then a set of 
 	generators for $K$ is the same as a set of generators of the kernel of $A$, which can be 
@@ -249,7 +247,8 @@ G \mid \rho(g) = 1 \}$.
 
 
 
-\section{Hard homogeneous spaces}
+
+\section{Hard Homogeneous Spaces}
 \label{sec:hhs}
 
 Let $G$ be a finite abelian group. A set $X$ equipped with an action of $G$ is called a $G$-space. 
@@ -284,7 +283,7 @@ exists a unique $g \in G$ such that $gx_1 = x_2$. In \cite{couveignes2006hard}, 
 \end{definition}
 To simplify the complexity statements, we shall refer to the first set of operations in Definition \ref{def:hhs} as \textit{elementary operations}.
 
-\paragraph{Key exchange.}
+\paragraph{A key exchange.}
 The commutativity of the group action leads to a protocol for key exchange that is a natural 
 generalization of the classical Diffie-Hellman: let $x_0$ be a fixed public parameter. Alice selects 
 a random $a \in G$ as her private key and publishes $ax_0$ as her public key. Bob does the same for 
